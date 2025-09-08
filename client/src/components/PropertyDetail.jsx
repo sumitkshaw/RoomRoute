@@ -46,7 +46,7 @@ const PropertyDetail = () => {
       if (!user?._id) return;
 
       try {
-        const response = await fetch("http://localhost:3001/bookings/user", {
+        const response = await fetch("https://househunt-production-4887.up.railway.app/bookings/user", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -88,7 +88,7 @@ const PropertyDetail = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/properties/${id}`, {
+      const response = await fetch(`https://househunt-production-4887.up.railway.app/properties/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -143,7 +143,7 @@ const PropertyDetail = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:3001/bookings", {
+      const response = await fetch("https://househunt-production-4887.up.railway.app/bookings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -185,7 +185,7 @@ const PropertyDetail = () => {
             {property.listingPhotoPaths?.map((photo, index) => (
               <img
                 key={index}
-                src={`http://localhost:3001/${photo.replace("public", "")}`}
+                src={`https://househunt-production-4887.up.railway.app/${photo.replace("public", "")}`}
                 alt={`${property.title} - Photo ${index + 1}`}
               />
             ))}

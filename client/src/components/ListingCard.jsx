@@ -172,7 +172,7 @@ const ListingCard = ({
           {listingPhotoPaths?.map((photo, index) => (
             <div className="slide" key={index}>
               <img
-                src={`http://localhost:3001/${photo.replace("public", "")}`}
+                src={`https://househunt-production-4887.up.railway.app/${photo.replace("public", "")}`}
                 alt={`${city} ${category} ${index + 1}`}
                 className="property-image"
               />
