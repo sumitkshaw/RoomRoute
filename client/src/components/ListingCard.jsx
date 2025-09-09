@@ -44,6 +44,9 @@ const ListingCard = ({
   const [isUpdatingWishlist, setIsUpdatingWishlist] = useState(false);
   const [occupiedDates, setOccupiedDates] = useState([]);
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const goToPrevSlide = (e) => {
     e.stopPropagation();
     setCurrentIndex((prevIndex) =>
@@ -83,7 +86,7 @@ const ListingCard = ({
     setIsUpdatingWishlist(true);
     try {
       const response = await fetch(
-        `https://househunt-production-4887.up.railway.app/users/${user._id}/${listingId}`,
+        `${API_URL}/users/${user._id}/${listingId}`,
         {
           method: "PATCH",
           headers: {
@@ -117,7 +120,7 @@ const ListingCard = ({
     setIsDeleting(true);
     try {
       const response = await fetch(
-        `https://househunt-production-4887.up.railway.app/properties/${listingId}`,
+        `${API_URL}/properties/${listingId}`,
         {
           method: "DELETE",
           headers: {
@@ -145,7 +148,7 @@ const ListingCard = ({
     const fetchOccupiedDates = async () => {
       try {
         const response = await fetch(
-          `https://househunt-production-4887.up.railway.app/bookings/listing/${listingId}`
+          `${API_URL}/bookings/listing/${listingId}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -159,7 +162,7 @@ const ListingCard = ({
     if (listingId && !booking) {
       fetchOccupiedDates();
     }
-  }, [listingId, booking]);
+  }, [listingId, booking, API_URL]);
 
   return (
     <div className="listing-card" onClick={handleClick}>
@@ -171,7 +174,7 @@ const ListingCard = ({
           {listingPhotoPaths?.map((photo, index) => (
             <div className="slide" key={index}>
               <img
-                src={`https://househunt-production-4887.up.railway.app/${photo.replace("public", "")}`}
+                src={`${API_URL}/${photo.replace("public", "")}`}
                 alt={`${city} ${category} ${index + 1}`}
                 className="property-image"
               />

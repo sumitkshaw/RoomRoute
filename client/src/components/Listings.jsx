@@ -12,13 +12,14 @@ const Listings = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const listings = useSelector((state) => state.listings);
 
-  // Wrap the function with useCallback to memoize it and prevent infinite re-renders
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const getFeedListings = useCallback(async () => {
     try {
       const response = await fetch(
         selectedCategory !== "All"
-          ? `https://househunt-production-4887.up.railway.app/properties?category=${selectedCategory}`
-          : "https://househunt-production-4887.up.railway.app/properties",
+          ? `${API_URL}/properties?category=${selectedCategory}`
+          : `${API_URL}/properties`, // ✅ FIXED: Removed quotes around ${API_URL}
         {
           method: "GET",
         }
@@ -30,11 +31,11 @@ const Listings = () => {
     } catch (err) {
       console.log("Fetch Listings Failed", err.message);
     }
-  }, [selectedCategory, dispatch]); // Add dependencies here
+  }, [selectedCategory, dispatch, API_URL]); // ✅ Added API_URL as dependency
 
   useEffect(() => {
     getFeedListings();
-  }, [getFeedListings, selectedCategory]); // Now includes getFeedListings as a dependency
+  }, [getFeedListings, selectedCategory]);
 
   return (
     <>

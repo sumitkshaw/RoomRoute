@@ -13,8 +13,10 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
+
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,7 +44,7 @@ const LoginPage = () => {
     setError("");
 
     try {
-      const response = await fetch("https://househunt-production-4887.up.railway.app/auth/login", {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

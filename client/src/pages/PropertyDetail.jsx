@@ -21,11 +21,14 @@ const PropertyDetail = () => {
   const [existingBookings, setExistingBookings] = useState([]);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     const fetchProperty = async () => {
       try {
         const response = await fetch(
-          `https://househunt-production-4887.up.railway.app/properties/${propertyId}`
+          `${API_URL}/properties/${propertyId}`
         );
         const data = await response.json();
         setProperty(data);
@@ -37,12 +40,12 @@ const PropertyDetail = () => {
     };
 
     fetchProperty();
-  }, [propertyId]);
+  }, [propertyId, API_URL]);
 
   const fetchExistingBookings = async () => {
     try {
       const response = await fetch(
-        `https://househunt-production-4887.up.railway.app/properties/${propertyId}/bookings`
+        `${API_URL}/properties/${propertyId}/bookings`
       );
       const data = await response.json();
       setExistingBookings(data);
@@ -55,7 +58,7 @@ const PropertyDetail = () => {
     if (propertyId) {
       fetchExistingBookings();
     }
-  }, [propertyId]);
+  }, [propertyId, API_URL]);
 
   const handleBooking = async () => {
     if (!user) {
@@ -103,7 +106,7 @@ const PropertyDetail = () => {
     }
 
     try {
-      const response = await fetch("https://househunt-production-4887.up.railway.app/bookings/create", {
+      const response = await fetch(`${API_URL}/bookings/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +143,7 @@ const PropertyDetail = () => {
           {property.listingPhotoPaths?.map((photo, index) => (
             <img
               key={index}
-              src={`https://househunt-production-4887.up.railway.app/${photo.replace("public", "")}`}
+              src={`${API_URL}/${photo.replace("public", "")}`}
               alt={`${property.city} property`}
             />
           ))}

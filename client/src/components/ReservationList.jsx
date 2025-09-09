@@ -11,6 +11,9 @@ const ReservationList = () => {
   const [error, setError] = useState("");
   const { user, token } = useSelector((state) => state.auth);
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     const fetchReservations = async () => {
       if (!user?._id) return;
@@ -18,7 +21,7 @@ const ReservationList = () => {
       try {
         // First get all properties owned by the user
         const propertiesResponse = await fetch(
-          "https://househunt-production-4887.up.railway.app/properties",
+          `${API_URL}/properties`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -38,7 +41,7 @@ const ReservationList = () => {
 
         // Get all bookings
         const bookingsResponse = await fetch(
-          "https://househunt-production-4887.up.railway.app/bookings/user",
+          `${API_URL}/bookings/user`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -67,12 +70,12 @@ const ReservationList = () => {
     };
 
     fetchReservations();
-  }, [user?._id, token]);
+  }, [user?._id, token, API_URL]); // Added API_URL as dependency
 
   const handleDeleteReservation = async (reservationId) => {
     try {
       const response = await fetch(
-        `https://househunt-production-4887.up.railway.app/bookings/${reservationId}`,
+        `${API_URL}/bookings/${reservationId}`,
         {
           method: "DELETE",
           headers: {
@@ -114,7 +117,7 @@ const ReservationList = () => {
             <div key={reservation._id} className="reservation-card">
               <Link to={`/properties/${reservation.listingId._id}`}>
                 <img
-                  src={`https://househunt-production-4887.up.railway.app/${reservation.listingId.listingPhotoPaths[0]?.replace(
+                  src={`${API_URL}/${reservation.listingId.listingPhotoPaths[0]?.replace(
                     "public",
                     ""
                   )}`}

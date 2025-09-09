@@ -17,6 +17,9 @@ const TripList = () => {
 
   const dispatch = useDispatch();
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   // Wrap getTripList in useCallback to prevent infinite re-renders
   const getTripList = useCallback(async () => {
     if (!user?._id) {
@@ -27,7 +30,7 @@ const TripList = () => {
 
     try {
       const response = await fetch(
-        `https://househunt-production-4887.up.railway.app/users/${user._id}/trips`,
+        `${API_URL}/users/${user._id}/trips`,
         {
           method: "GET",
         }
@@ -54,7 +57,7 @@ const TripList = () => {
       setError("Failed to load trips. Please try again later.");
       setLoading(false);
     }
-  }, [user?._id, dispatch]);
+  }, [user?._id, dispatch, API_URL]);
 
   const handleDeleteTrip = async (tripId) => {
     if (!window.confirm("Are you sure you want to cancel this trip?")) {
@@ -62,7 +65,7 @@ const TripList = () => {
     }
 
     try {
-      const response = await fetch(`https://househunt-production-4887.up.railway.app/bookings/${tripId}`, {
+      const response = await fetch(`${API_URL}/bookings/${tripId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

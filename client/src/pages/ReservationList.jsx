@@ -11,6 +11,9 @@ const ReservationList = () => {
   const [reservations, setReservations] = useState([]);
   const user = useSelector((state) => state.user);
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "short",
@@ -29,7 +32,7 @@ const ReservationList = () => {
 
     try {
       const response = await fetch(
-        `https://househunt-production-4887.up.railway.app/bookings/host/${user._id}`,
+        `${API_URL}/bookings/host/${user._id}`,
         {
           method: "GET",
         }
@@ -76,7 +79,7 @@ const ReservationList = () => {
           <div key={reservation._id} className="reservation-card">
             <div className="property-info">
               <img
-                src={`https://househunt-production-4887.up.railway.app/${reservation.listingId.listingPhotoPaths[0].replace(
+                src={`${API_URL}/${reservation.listingId.listingPhotoPaths[0].replace(
                   "public",
                   ""
                 )}`}
@@ -91,7 +94,7 @@ const ReservationList = () => {
               <h3>Guest Information</h3>
               <div className="guest-details">
                 <img
-                  src={`https://househunt-production-4887.up.railway.app/${reservation.customerId.profileImagePath.replace(
+                  src={`${API_URL}/${reservation.customerId.profileImagePath.replace(
                     "public",
                     ""
                   )}`}

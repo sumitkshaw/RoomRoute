@@ -15,11 +15,14 @@ const CategoryPage = () => {
   const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings);
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   // Wrap the function with useCallback to memoize it and prevent infinite re-renders
   const getFeedListings = useCallback(async () => {
     try {
       const response = await fetch(
-        `https://househunt-production-4887.up.railway.app/properties?category=${category}`,
+        `${API_URL}/properties?category=${category}`,
         {
           method: "GET",
         }
@@ -31,7 +34,7 @@ const CategoryPage = () => {
     } catch (err) {
       console.log("Fetch Listings Failed", err.message);
     }
-  }, [category, dispatch]); // Dependencies for useCallback
+  }, [category, dispatch, API_URL]); // Added API_URL as dependency
 
   // Now include getFeedListings in the dependency array
   useEffect(() => {

@@ -12,6 +12,15 @@ const RegisterPage = () => {
     profileImage: null,
   });
 
+  const [passwordMatch, setPasswordMatch] = useState(true);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({
@@ -20,22 +29,17 @@ const RegisterPage = () => {
     });
   };
 
-  const [passwordMatch, setPasswordMatch] = useState(true);
-  const [error, setError] = useState("");
-
-  // Fixed: Added dependency array to prevent infinite loops
   useEffect(() => {
     setPasswordMatch(
       formData.password === formData.confirmPassword ||
         formData.confirmPassword === ""
     );
-  }, [formData.password, formData.confirmPassword]); // Added dependencies
-
-  const navigate = useNavigate();
+  }, [formData.password, formData.confirmPassword]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
       const register_form = new FormData();
@@ -45,7 +49,7 @@ const RegisterPage = () => {
       register_form.append("password", formData.password);
       register_form.append("profileImage", formData.profileImage);
 
-      const response = await fetch("https://househunt-production-4887.up.railway.app/auth/register", {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         body: register_form,
       });
@@ -60,6 +64,8 @@ const RegisterPage = () => {
     } catch (err) {
       console.log("Registration failed", err.message);
       setError("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,7 +128,6 @@ const RegisterPage = () => {
             required
           />
           <label htmlFor="image">
-            {/* Fixed: Removed redundant "photo" from alt text */}
             <img src="/assets/addImage.png" alt="add profile" />
             <p>Upload Your Photo</p>
           </label>
@@ -134,8 +139,8 @@ const RegisterPage = () => {
               style={{ maxWidth: "80px" }}
             />
           )}
-          <button type="submit" disabled={!passwordMatch}>
-            REGISTER
+          <button type="submit" disabled={!passwordMatch || loading}>
+            {loading ? "REGISTERING..." : "REGISTER"}
           </button>
         </form>
         <a href="/login">Already have an account? Log In Here</a>

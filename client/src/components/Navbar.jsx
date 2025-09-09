@@ -14,10 +14,13 @@ const Navbar = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   return (
     <div className="navbar">
       <Link to="/">
-        <img src="/assets/logo.png" alt="HouseHunt logo" />
+        <img src="/assets/logo.png" alt="RoomRoute logo" />
       </Link>
 
       <div className="navbar_search">
@@ -60,13 +63,13 @@ const Navbar = () => {
             <img
               src={
                 user?.profileImagePath
-                  ? `https://househunt-production-4887.up.railway.app/${user.profileImagePath.replace(
+                  ? `${API_URL}/${user.profileImagePath.replace(
                       "public",
                       ""
                     )}`
                   : "/assets/default-profile.png"
               }
-              alt={user?.name ? `${user.name}'s profile` : "User profile"}
+              alt={user?.name || "User profile"}
               style={{ objectFit: "cover", borderRadius: "50%" }}
             />
           )}

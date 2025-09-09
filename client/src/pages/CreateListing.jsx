@@ -84,13 +84,16 @@ const CreateListing = () => {
 
   const creatorId = useSelector((state) => state.user._id);
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const navigate = useNavigate();
 
   const handlePost = async (e) => {
     e.preventDefault();
 
     try {
-      /* Create a new FormData onject to handle file uploads */
+      /* Create a new FormData object to handle file uploads */
       const listingForm = new FormData();
       listingForm.append("creator", creatorId);
       listingForm.append("category", category);
@@ -117,7 +120,7 @@ const CreateListing = () => {
       });
 
       /* Send a POST request to server */
-      const response = await fetch("https://househunt-production-4887.up.railway.app/properties/create", {
+      const response = await fetch(`${API_URL}/properties/create`, {
         method: "POST",
         body: listingForm,
       });

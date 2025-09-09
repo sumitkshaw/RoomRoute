@@ -17,11 +17,14 @@ const ListingDetails = () => {
   const { listingId } = useParams();
   const [listing, setListing] = useState(null);
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   // Fix: Wrap function in useCallback to stabilize reference
   const getListingDetails = useCallback(async () => {
     try {
       const response = await fetch(
-        `https://househunt-production-4887.up.railway.app/properties/${listingId}`,
+        `${API_URL}/properties/${listingId}`,
         {
           method: "GET",
         }
@@ -39,7 +42,7 @@ const ListingDetails = () => {
       setError(err.message);
       setLoading(false);
     }
-  }, [listingId]); // Add dependencies
+  }, [listingId, API_URL]); // Add dependencies
 
   useEffect(() => {
     getListingDetails();
@@ -77,7 +80,7 @@ const ListingDetails = () => {
         totalPrice: listing?.price * dayCount,
       };
 
-      const response = await fetch("https://househunt-production-4887.up.railway.app/bookings/create", {
+      const response = await fetch(`${API_URL}/bookings/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,8 +118,8 @@ const ListingDetails = () => {
           {listing.listingPhotoPaths?.map((item, index) => (
             <img
               key={index}
-              src={`https://househunt-production-4887.up.railway.app/${item.replace("public", "")}`}
-              alt={`${listing.title} - Photo ${index + 1}`} 
+              src={`${API_URL}/${item.replace("public", "")}`}
+              alt={`${listing.title} ${index + 1}`}
             />
           ))}
         </div>
@@ -135,7 +138,7 @@ const ListingDetails = () => {
           <>
             <div className="profile">
               <img
-                src={`https://househunt-production-4887.up.railway.app/${listing.creator.profileImagePath?.replace(
+                src={`${API_URL}/${listing.creator.profileImagePath?.replace(
                   "public",
                   ""
                 )}`}

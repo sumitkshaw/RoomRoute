@@ -14,9 +14,12 @@ const SearchPage = () => {
   const listings = useSelector((state) => state.listings)
   const dispatch = useDispatch()
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const getSearchListings = useCallback(async () => {
     try {
-      const response = await fetch(`https://househunt-production-4887.up.railway.app/properties/search/${search}`, {
+      const response = await fetch(`${API_URL}/properties/search/${search}`, {
         method: "GET"
       })
 
@@ -26,7 +29,7 @@ const SearchPage = () => {
     } catch (err) {
       console.log("Fetch Search List failed!", err.message)
     }
-  }, [search, dispatch])
+  }, [search, dispatch, API_URL])
 
   useEffect(() => {
     getSearchListings()

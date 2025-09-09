@@ -10,12 +10,15 @@ const TripList = () => {
   const [error, setError] = useState("");
   const { user, token } = useSelector((state) => state.auth);
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     const fetchTrips = async () => {
       if (!user?._id) return;
 
       try {
-        const response = await fetch("https://househunt-production-4887.up.railway.app/bookings/user", {
+        const response = await fetch(`${API_URL}/bookings/user`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -37,11 +40,11 @@ const TripList = () => {
     };
 
     fetchTrips();
-  }, [user?._id, token]);
+  }, [user?._id, token, API_URL]); // Added API_URL as dependency
 
   const handleDeleteTrip = async (tripId) => {
     try {
-      const response = await fetch(`https://househunt-production-4887.up.railway.app/bookings/${tripId}`, {
+      const response = await fetch(`${API_URL}/bookings/${tripId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -80,7 +83,7 @@ const TripList = () => {
             <div key={trip._id} className="trip-card">
               <Link to={`/properties/${trip.listingId._id}`}>
                 <img
-                  src={`https://househunt-production-4887.up.railway.app/${trip.listingId.listingPhotoPaths[0]?.replace(
+                  src={`${API_URL}/${trip.listingId.listingPhotoPaths[0]?.replace(
                     "public",
                     ""
                   )}`}

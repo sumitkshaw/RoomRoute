@@ -17,13 +17,16 @@ const PropertyDetail = () => {
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state.auth);
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   // Check if user owns the property
   const isOwner = property?.creator?._id === user?._id;
 
   // Fetch property details
   const fetchProperty = useCallback(async () => {
     try {
-      const response = await fetch(`https://househunt-production-4887.up.railway.app/properties/${id}`);
+      const response = await fetch(`${API_URL}/properties/${id}`);
       const data = await response.json();
 
       if (!response.ok) {
@@ -36,14 +39,14 @@ const PropertyDetail = () => {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, API_URL]); // Added API_URL as dependency
 
   // Fetch user bookings
   const fetchUserBookings = useCallback(async () => {
     if (!user?._id) return;
 
     try {
-      const response = await fetch("https://househunt-production-4887.up.railway.app/bookings/user", {
+      const response = await fetch(`${API_URL}/bookings/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -62,7 +65,7 @@ const PropertyDetail = () => {
     } catch (err) {
       console.error("Error fetching bookings:", err);
     }
-  }, [user?._id, token, id]);
+  }, [user?._id, token, id, API_URL]); // Added API_URL as dependency
 
   useEffect(() => {
     fetchProperty();
@@ -90,7 +93,7 @@ const PropertyDetail = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`https://househunt-production-4887.up.railway.app/properties/${id}`, {
+      const response = await fetch(`${API_URL}/properties/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -145,7 +148,7 @@ const PropertyDetail = () => {
         return;
       }
 
-      const response = await fetch("https://househunt-production-4887.up.railway.app/bookings", {
+      const response = await fetch(`${API_URL}/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -193,7 +196,7 @@ const PropertyDetail = () => {
             {property.listingPhotoPaths?.map((photo, index) => (
               <img
                 key={index}
-                src={`https://househunt-production-4887.up.railway.app/${photo.replace("public", "")}`}
+                src={`${API_URL}/${photo.replace("public", "")}`}
                 alt={`${property.title} ${index + 1}`}
               />
             ))}

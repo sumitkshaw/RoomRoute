@@ -23,10 +23,13 @@ const PropertyList = () => {
 
   const dispatch = useDispatch();
 
+  // Get API URL from environment variable
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const getPropertyList = async () => {
     try {
       const response = await fetch(
-        `https://househunt-production-4887.up.railway.app/users/${user._id}/properties`,
+        `${API_URL}/users/${user._id}/properties`,
         {
           method: "GET",
         }
@@ -49,7 +52,7 @@ const PropertyList = () => {
   const handleDeleteConfirm = async () => {
     try {
       const response = await fetch(
-        `https://househunt-production-4887.up.railway.app/properties/${propertyToDelete}`,
+        `${API_URL}/properties/${propertyToDelete}`,
         {
           method: "DELETE",
           headers: {
