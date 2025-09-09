@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import "../styles/List.scss";
 import Loader from "../components/Loader";
 import Navbar from "../components/Navbar";
@@ -17,7 +17,8 @@ const TripList = () => {
 
   const dispatch = useDispatch();
 
-  const getTripList = async () => {
+  // Wrap getTripList in useCallback to prevent infinite re-renders
+  const getTripList = useCallback(async () => {
     if (!user?._id) {
       setError("Please login to view your trips");
       setLoading(false);
@@ -53,7 +54,7 @@ const TripList = () => {
       setError("Failed to load trips. Please try again later.");
       setLoading(false);
     }
-  };
+  }, [user?._id, dispatch]);
 
   const handleDeleteTrip = async (tripId) => {
     if (!window.confirm("Are you sure you want to cancel this trip?")) {
@@ -84,7 +85,7 @@ const TripList = () => {
 
   useEffect(() => {
     getTripList();
-  }, [user?._id]);
+  }, [getTripList]); // Now includes getTripList as a dependency
 
   if (loading) return <Loader />;
   if (error) return <div className="error-message">{error}</div>;

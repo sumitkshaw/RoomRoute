@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import "../styles/ListingDetails.scss";
 import { useNavigate, useParams } from "react-router-dom";
 import { facilities } from "../data";
@@ -17,7 +17,8 @@ const ListingDetails = () => {
   const { listingId } = useParams();
   const [listing, setListing] = useState(null);
 
-  const getListingDetails = async () => {
+  // Fix: Wrap function in useCallback to stabilize reference
+  const getListingDetails = useCallback(async () => {
     try {
       const response = await fetch(
         `https://househunt-production-4887.up.railway.app/properties/${listingId}`,
@@ -38,11 +39,11 @@ const ListingDetails = () => {
       setError(err.message);
       setLoading(false);
     }
-  };
+  }, [listingId]); // Add dependencies
 
   useEffect(() => {
     getListingDetails();
-  }, [listingId]);
+  }, [getListingDetails]); // Fix: Add getListingDetails as dependency
 
   /* BOOKING CALENDAR */
   const [dateRange, setDateRange] = useState([
@@ -115,7 +116,7 @@ const ListingDetails = () => {
             <img
               key={index}
               src={`https://househunt-production-4887.up.railway.app/${item.replace("public", "")}`}
-              alt="listing photo"
+              alt={`${listing.title} - Photo ${index + 1}`} 
             />
           ))}
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "../styles/List.scss";
 import Navbar from "../components/Navbar";
 import { useParams } from "react-router-dom";
@@ -6,19 +6,20 @@ import { useSelector, useDispatch } from "react-redux";
 import { setListings } from "../redux/state";
 import Loader from "../components/Loader";
 import ListingCard from "../components/ListingCard";
-import Footer from "../components/Footer"
+import Footer from "../components/Footer";
 
 const CategoryPage = () => {
   const [loading, setLoading] = useState(true);
-  const { category } = useParams()
+  const { category } = useParams();
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const listings = useSelector((state) => state.listings);
 
-  const getFeedListings = async () => {
+  // Wrap the function with useCallback to memoize it and prevent infinite re-renders
+  const getFeedListings = useCallback(async () => {
     try {
       const response = await fetch(
-          `https://househunt-production-4887.up.railway.app/properties?category=${category}`,
+        `https://househunt-production-4887.up.railway.app/properties?category=${category}`,
         {
           method: "GET",
         }
@@ -30,11 +31,12 @@ const CategoryPage = () => {
     } catch (err) {
       console.log("Fetch Listings Failed", err.message);
     }
-  };
+  }, [category, dispatch]); // Dependencies for useCallback
 
+  // Now include getFeedListings in the dependency array
   useEffect(() => {
     getFeedListings();
-  }, [category]);
+  }, [getFeedListings, category]);
 
   return loading ? (
     <Loader />
@@ -57,6 +59,7 @@ const CategoryPage = () => {
             booking = false,
           }) => (
             <ListingCard
+              key={_id} // Added key prop for React list rendering
               listingId={_id}
               creator={creator}
               listingPhotoPaths={listingPhotoPaths}

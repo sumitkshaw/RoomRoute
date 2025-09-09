@@ -1,5 +1,5 @@
 import "../styles/Footer.scss"
-import { LocationOn, LocalPhone, Email } from "@mui/icons-material"
+import { LocalPhone, Email } from "@mui/icons-material"
 const Footer = () => {
   return (
     <div className="footer">
@@ -20,11 +20,11 @@ const Footer = () => {
         <h3>Contact</h3>
         <div className="footer_right_info">
           <LocalPhone />
-          <p>+1 234 567 890</p>
+          <p>+91-XXXXX XXXXX</p>
         </div>
         <div className="footer_right_info">
           <Email />
-          <p>dreamnest@support.com</p>
+          <p>roomroute@support.com</p>
         </div>
         <img src="/assets/payment.png" alt="payment" />
       </div>

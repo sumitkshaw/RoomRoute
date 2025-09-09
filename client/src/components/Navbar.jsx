@@ -9,19 +9,15 @@ import { setLogout } from "../redux/state";
 
 const Navbar = () => {
   const [dropdownMenu, setDropdownMenu] = useState(false);
-
   const user = useSelector((state) => state.user);
-
   const dispatch = useDispatch();
-
   const [search, setSearch] = useState("");
-
   const navigate = useNavigate();
 
   return (
     <div className="navbar">
       <Link to="/">
-        <img src="/assets/logo.png" alt="logo" />
+        <img src="/assets/logo.png" alt="HouseHunt logo" />
       </Link>
 
       <div className="navbar_search">
@@ -55,6 +51,7 @@ const Navbar = () => {
         <button
           className="navbar_right_account"
           onClick={() => setDropdownMenu(!dropdownMenu)}
+          aria-label="Account menu"
         >
           <Menu sx={{ color: variables.darkgrey }} />
           {!user ? (
@@ -69,7 +66,7 @@ const Navbar = () => {
                     )}`
                   : "/assets/default-profile.png"
               }
-              alt="profile photo"
+              alt={user?.name ? `${user.name}'s profile` : "User profile"}
               style={{ objectFit: "cover", borderRadius: "50%" }}
             />
           )}

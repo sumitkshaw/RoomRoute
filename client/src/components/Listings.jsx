@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { categories } from "../data";
 import "../styles/Listings.scss";
 import ListingCard from "./ListingCard";
@@ -9,12 +9,11 @@ import { setListings } from "../redux/state";
 const Listings = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-
   const [selectedCategory, setSelectedCategory] = useState("All");
-
   const listings = useSelector((state) => state.listings);
 
-  const getFeedListings = async () => {
+  // Wrap the function with useCallback to memoize it and prevent infinite re-renders
+  const getFeedListings = useCallback(async () => {
     try {
       const response = await fetch(
         selectedCategory !== "All"
@@ -31,11 +30,11 @@ const Listings = () => {
     } catch (err) {
       console.log("Fetch Listings Failed", err.message);
     }
-  };
+  }, [selectedCategory, dispatch]); // Add dependencies here
 
   useEffect(() => {
     getFeedListings();
-  }, [selectedCategory]);
+  }, [getFeedListings, selectedCategory]); // Now includes getFeedListings as a dependency
 
   return (
     <>

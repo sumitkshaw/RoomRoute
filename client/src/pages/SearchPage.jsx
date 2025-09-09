@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import "../styles/List.scss"
-import { useSelector,useDispatch  } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setListings } from "../redux/state";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Loader from "../components/Loader"
 import Navbar from "../components/Navbar";
 import ListingCard from "../components/ListingCard";
@@ -12,10 +12,9 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(true)
   const { search } = useParams()
   const listings = useSelector((state) => state.listings)
-
   const dispatch = useDispatch()
 
-  const getSearchListings = async () => {
+  const getSearchListings = useCallback(async () => {
     try {
       const response = await fetch(`https://househunt-production-4887.up.railway.app/properties/search/${search}`, {
         method: "GET"
@@ -27,19 +26,19 @@ const SearchPage = () => {
     } catch (err) {
       console.log("Fetch Search List failed!", err.message)
     }
-  }
+  }, [search, dispatch])
 
   useEffect(() => {
     getSearchListings()
-  }, [search])
+  }, [getSearchListings])
   
   return loading ? <Loader /> : (
     <>
       <Navbar />
-      <h1 className="title-list">{search}</h1>
+      <h1 className="title-list">Search Results for: {search}</h1>
       <div className="list">
-        {listings?.map(
-          ({
+        {listings?.length > 0 ? (
+          listings.map(({
             _id,
             creator,
             listingPhotoPaths,
@@ -52,6 +51,7 @@ const SearchPage = () => {
             booking = false,
           }) => (
             <ListingCard
+              key={_id}
               listingId={_id}
               creator={creator}
               listingPhotoPaths={listingPhotoPaths}
@@ -63,7 +63,12 @@ const SearchPage = () => {
               price={price}
               booking={booking}
             />
-          )
+          ))
+        ) : (
+          <div className="no-results">
+            <h2>No properties found for "{search}"</h2>
+            <p>Try adjusting your search terms or browse our categories</p>
+          </div>
         )}
       </div>
       <Footer />
@@ -71,4 +76,4 @@ const SearchPage = () => {
   );
 }
 
-export default SearchPage
+export default SearchPage;

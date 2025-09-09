@@ -23,12 +23,13 @@ const RegisterPage = () => {
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [error, setError] = useState("");
 
+  // Fixed: Added dependency array to prevent infinite loops
   useEffect(() => {
     setPasswordMatch(
       formData.password === formData.confirmPassword ||
         formData.confirmPassword === ""
     );
-  });
+  }, [formData.password, formData.confirmPassword]); // Added dependencies
 
   const navigate = useNavigate();
 
@@ -121,14 +122,15 @@ const RegisterPage = () => {
             required
           />
           <label htmlFor="image">
-            <img src="/assets/addImage.png" alt="add profile photo" />
+            {/* Fixed: Removed redundant "photo" from alt text */}
+            <img src="/assets/addImage.png" alt="add profile" />
             <p>Upload Your Photo</p>
           </label>
 
           {formData.profileImage && (
             <img
               src={URL.createObjectURL(formData.profileImage)}
-              alt="profile photo"
+              alt="profile" 
               style={{ maxWidth: "80px" }}
             />
           )}
