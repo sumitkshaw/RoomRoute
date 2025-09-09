@@ -13,10 +13,8 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  // Hardcoded API URL for deployment
-  const API_URL = 'https://househunt-production-4887.up.railway.app';
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,7 +42,7 @@ const LoginPage = () => {
     setError("");
 
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const response = await fetch("https://househunt-production-4887.up.railway.app/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

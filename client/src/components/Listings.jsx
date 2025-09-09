@@ -12,15 +12,13 @@ const Listings = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const listings = useSelector((state) => state.listings);
 
-  // Hardcoded API URL for deployment
-  const API_URL = 'https://househunt-production-4887.up.railway.app';
-
+  // Wrap the function with useCallback to memoize it and prevent infinite re-renders
   const getFeedListings = useCallback(async () => {
     try {
       const response = await fetch(
         selectedCategory !== "All"
-          ? `${API_URL}/properties?category=${selectedCategory}`
-          : `${API_URL}/properties`,
+          ? `https://househunt-production-4887.up.railway.app/properties?category=${selectedCategory}`
+          : "https://househunt-production-4887.up.railway.app/properties",
         {
           method: "GET",
         }
@@ -31,13 +29,12 @@ const Listings = () => {
       setLoading(false);
     } catch (err) {
       console.log("Fetch Listings Failed", err.message);
-      setLoading(false); // Stop loading on error
     }
-  }, [selectedCategory, dispatch, API_URL]);
+  }, [selectedCategory, dispatch]); // Add dependencies here
 
   useEffect(() => {
     getFeedListings();
-  }, [getFeedListings, selectedCategory]);
+  }, [getFeedListings, selectedCategory]); // Now includes getFeedListings as a dependency
 
   return (
     <>
@@ -72,7 +69,6 @@ const Listings = () => {
               booking=false
             }) => (
               <ListingCard
-                key={_id}
                 listingId={_id}
                 creator={creator}
                 listingPhotoPaths={listingPhotoPaths}

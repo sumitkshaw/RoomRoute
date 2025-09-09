@@ -14,9 +14,6 @@ const Navbar = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
-  // Hardcoded API URL for deployment
-  const API_URL = 'https://househunt-production-4887.up.railway.app';
-
   return (
     <div className="navbar">
       <Link to="/">
@@ -63,7 +60,7 @@ const Navbar = () => {
             <img
               src={
                 user?.profileImagePath
-                  ? `${API_URL}/${user.profileImagePath.replace(
+                  ? `https://househunt-production-4887.up.railway.app/${user.profileImagePath.replace(
                       "public",
                       ""
                     )}`
