@@ -12,16 +12,23 @@ const RegisterPage = () => {
     profileImage: null,
   });
 
+  const [passwordMatch, setPasswordMatch] = useState(true);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  // Hardcoded API URL for deployment
+  const API_URL = 'https://househunt-production-4887.up.railway.app';
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({
       ...formData,
       [name]: name === "profileImage" ? files[0] : value,
     });
+    setError(""); // Clear error when user makes changes
   };
-
-  const [passwordMatch, setPasswordMatch] = useState(true);
-  const [error, setError] = useState("");
 
   // Fixed: Added dependency array to prevent infinite loops
   useEffect(() => {
@@ -31,11 +38,30 @@ const RegisterPage = () => {
     );
   }, [formData.password, formData.confirmPassword]); // Added dependencies
 
-  const navigate = useNavigate();
+  const validateForm = () => {
+    if (!formData.firstName || !formData.lastName || !formData.email || 
+        !formData.password || !formData.confirmPassword || !formData.profileImage) {
+      setError("All fields are required!");
+      return false;
+    }
+    if (!passwordMatch) {
+      setError("Passwords do not match!");
+      return false;
+    }
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters!");
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (!validateForm()) return;
+
+    setLoading(true);
 
     try {
       const register_form = new FormData();
@@ -45,7 +71,7 @@ const RegisterPage = () => {
       register_form.append("password", formData.password);
       register_form.append("profileImage", formData.profileImage);
 
-      const response = await fetch("https://househunt-production-4887.up.railway.app/auth/register", {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         body: register_form,
       });
@@ -60,6 +86,8 @@ const RegisterPage = () => {
     } catch (err) {
       console.log("Registration failed", err.message);
       setError("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,6 +123,7 @@ const RegisterPage = () => {
             value={formData.password}
             onChange={handleChange}
             type="password"
+            minLength={6}
             required
           />
           <input
@@ -106,8 +135,8 @@ const RegisterPage = () => {
             required
           />
 
-          {!passwordMatch && (
-            <p style={{ color: "red" }}>Passwords are not matched!</p>
+          {!passwordMatch && formData.confirmPassword && (
+            <p style={{ color: "red" }}>Passwords do not match!</p>
           )}
 
           {error && <p style={{ color: "red" }}>{error}</p>}
@@ -122,7 +151,6 @@ const RegisterPage = () => {
             required
           />
           <label htmlFor="image">
-            {/* Fixed: Removed redundant "photo" from alt text */}
             <img src="/assets/addImage.png" alt="add profile" />
             <p>Upload Your Photo</p>
           </label>
@@ -130,12 +158,13 @@ const RegisterPage = () => {
           {formData.profileImage && (
             <img
               src={URL.createObjectURL(formData.profileImage)}
-              alt="profile" 
+              alt="profile preview" 
               style={{ maxWidth: "80px" }}
             />
           )}
-          <button type="submit" disabled={!passwordMatch}>
-            REGISTER
+          
+          <button type="submit" disabled={!passwordMatch || loading}>
+            {loading ? "REGISTERING..." : "REGISTER"}
           </button>
         </form>
         <a href="/login">Already have an account? Log In Here</a>
